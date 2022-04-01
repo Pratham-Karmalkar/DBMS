@@ -22,7 +22,23 @@ mysql> show tables;
 | teaches                    |
 | time_slot                  |
 +----------------------------+
+
+
 9 rows in set (0.00 sec)
+
+
+//creating user
+mysql> create user Orion identified by "orion";
+Query OK, 0 rows affected (0.00 sec)
+<!------------------------DCL Commands-------------------------!>
+//Grants all permissions on given database to user Orion
+mysql> grant all on 25073_Assignment3.* to Orion;
+
+//revokes all the permissions on given database to user Orion
+mysql> revoke all privileges on 25073_Assignment3.* from Orion;
+
+//drops user 
+mysql> drop user Orion;
 
 
 <!-------------------------------------------------------Department table---------------------------------------------------->
@@ -289,7 +305,8 @@ Records: 0  Duplicates: 0  Warnings: 0
 mysql> create table section (sec_id varchar(10), semester varchar(10), year varchar(10), course_id varchar(10), building int, room_no int,  foreign key(building, room_no) references classroom(building, room_no), tid varchar(15), foreign key(tid)references time_slot(tid), foreign key(course_id) references course(course_id), primary key(sec_id, course_id,semester,year));
 
 // Insert into section
-mysql> insert into section values ("S11","I","FY","Bio-1",5,52,"t1"),("S11","I","FY","Bio-2",4,42,"t2") ,("S12","II","FY","Phy-2",3,32,"t3"), ("S13","III","SY","CS-1",1,11,"t4"), ("S13","II","SY","CS-2",3,32,"t5"), ("S14","II","TY","Mu-1",2,21,"t4"), ("S14","II","TY","Mu-2",2,21,"t2"), ("S14","I","FY","His-1",4,42,"t3"), ("S16","II","TY","Bio-1",5,52,"t3");
+mysql> insert into section values ("S11","I","FY","Biomysql> 
+-1",5,52,"t1"),("S11","I","FY","Bio-2",4,42,"t2") ,("S12","II","FY","Phy-2",3,32,"t3"), ("S13","III","SY","CS-1",1,11,"t4"), ("S13","II","SY","CS-2",3,32,"t5"), ("S14","II","TY","Mu-1",2,21,"t4"), ("S14","II","TY","Mu-2",2,21,"t2"), ("S14","I","FY","His-1",4,42,"t3"), ("S16","II","TY","Bio-1",5,52,"t3");
 
 //Updating a wrong value
 mysql> Update section SET sec_id = "S15" where course_id = "His-1" AND building = 4;
@@ -617,10 +634,38 @@ mysql> select instructor.ins_name, instructor.dept_name,department.building from
 +----------+-----------+----------+
 7 rows in set (0.03 sec)
 
+13. Find the instructor who has taught some courses
+Ans: 
+
+mysql> select ins_name, course_id from instructor, teaches Where instructor.ins_
+id = teaches.ins_id;
++----------+-----------+
+| ins_name | course_id |
++----------+-----------+
+| ABC      | CS-2      |
+| EFG      | Phy-2     |
+| LMN      | Mu-1      |
+| STU      | Bio-1     |
+| STU      | Bio-2     |
++----------+-----------+
+5 rows in set (0.01 sec)
+
+14. For all instructor in university who have taught some courses find name and course_id of all courses they have taught 
+Ans:
+mysql> select ins_name, course_id from instructor, teaches Where instructor.ins_
+id = teaches.ins_id;
++----------+-----------+
+| ins_name | course_id |
++----------+-----------+
+| ABC      | CS-2      |
+| EFG      | Phy-2     |
+| LMN      | Mu-1      |
+| STU      | Bio-1     |
+| STU      | Bio-2     |
++----------+-----------+
 
 
-
-
+15. List all instructors along with title of courses that they teach  
 
 
 
