@@ -1,0 +1,122 @@
+*/----------------------DBMS Assignment No. 3------------------------/*
+
+//Create Database
+mysql> create database 25073_Assignment3;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| 25073_Assignment3  |
+| mysql              |
+| performance_schema |
+| sys                |
+| university_25020   |
+| university_25073   |
++--------------------+
+
+
+
+mysql> use 25073_Assignment3;
+Database changed
+mysql> 
+
+
+//Creating Two Tables;
+
+*/----------------------------Library table----------------------------------*/
+
+mysql> create table library(book_id int Primary key,book_name varchar(30), author varchar(30), cost int, tot_qty int, available_qty int );
+Query OK, 0 rows affected (0.23 sec)
+
+
+//desc
+mysql> desc library;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| book_id       | int(11)     | NO   | PRI | NULL    |       |
+| book_name     | varchar(30) | YES  |     | NULL    |       |
+| author        | varchar(30) | YES  |     | NULL    |       |
+| cost          | int(11)     | YES  |     | NULL    |       |
+| tot_qty       | int(11)     | YES  |     | NULL    |       |
+| available_qty | int(11)     | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+//Changing Column book name
+mysql> Alter Table library Modify  book_name varchar(60);
+Query OK, 0 rows affected (0.06 sec)
+Records: 0  Duplicates: 0  Warnings: 0
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| book_name     | varchar(60) | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+
+
+
+*/----------------------------Borrower table---------------------------------*/
+
+mysql> create table borrower(b_id int Primary key,b_name varchar(30), book_id int, book_name varchar(40), Foreign key(book_id) references library(book_id));
+Query OK, 0 rows affected (0.28 sec)
+
+//desc
+mysql> desc borrower;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| b_id      | int(11)     | NO   | PRI | NULL    |       |
+| b_name    | varchar(30) | YES  |     | NULL    |       |
+| book_id   | int(11)     | YES  | MUL | NULL    |       |
+| book_name | varchar(40) | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+
+/*------------------------------------------------------------------------/*
+
+//show tables
+mysql> show tables;
++-----------------------------+
+| Tables_in_25073_Assignment3 |
++-----------------------------+
+| borrower                    |
+| library                     |
++-----------------------------+
+
+*/------------------------DROPING TABLE-----------------------------------/*
+
+//Creating Demo Table;
+mysql> Create table Tab (U_id int primary key, U_name varchar(20));
+
+mysql> show tables;
++-----------------------------+
+| Tables_in_25073_Assignment3 |
++-----------------------------+
+| Tab                         |
+| borrower                    |
+| library                     |
++-----------------------------+
+3 rows in set (0.00 sec)
+
+mysql> Drop table Tab;
+Query OK, 0 rows affected (0.16 sec)
+
+mysql> show tables;
++-----------------------------+
+| Tables_in_25073_Assignment3 |
++-----------------------------+
+| borrower                    |
+| library                     |
++-----------------------------+
+2 rows in set (0.00 sec)
+
+mysql> 
+
+
+
+
+
