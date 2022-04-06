@@ -22,10 +22,7 @@ mysql> show tables;
 | teaches                    |
 | time_slot                  |
 +----------------------------+
-
-
 9 rows in set (0.00 sec)
-
 
 //creating user
 mysql> create user Orion identified by "orion";
@@ -39,6 +36,7 @@ mysql> revoke all privileges on 25073_Assignment3.* from Orion;
 
 //drops user 
 mysql> drop user Orion;
+
 
 
 <!-------------------------------------------------------Department table---------------------------------------------------->
@@ -175,6 +173,14 @@ Query OK, 0 rows affected (0.31 sec)
 Records: 0  Duplicates: 0  Warnings: 0
 
 
+//updating values for query
+mysql> Update instructor SET  ins_name = "ABCDE" where ins_id = 111;
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> Update instructor SET  ins_name = "PQRS" where ins_id = 112;
+Query OK, 1 row affected (0.03 sec)
+
 
 
 
@@ -305,8 +311,7 @@ Records: 0  Duplicates: 0  Warnings: 0
 mysql> create table section (sec_id varchar(10), semester varchar(10), year varchar(10), course_id varchar(10), building int, room_no int,  foreign key(building, room_no) references classroom(building, room_no), tid varchar(15), foreign key(tid)references time_slot(tid), foreign key(course_id) references course(course_id), primary key(sec_id, course_id,semester,year));
 
 // Insert into section
-mysql> insert into section values ("S11","I","FY","Biomysql> 
--1",5,52,"t1"),("S11","I","FY","Bio-2",4,42,"t2") ,("S12","II","FY","Phy-2",3,32,"t3"), ("S13","III","SY","CS-1",1,11,"t4"), ("S13","II","SY","CS-2",3,32,"t5"), ("S14","II","TY","Mu-1",2,21,"t4"), ("S14","II","TY","Mu-2",2,21,"t2"), ("S14","I","FY","His-1",4,42,"t3"), ("S16","II","TY","Bio-1",5,52,"t3");
+mysql> insert into section values ("S11","I","FY","Bio-1",5,52,"t1"),("S11","I","FY","Bio-2",4,42,"t2") ,("S12","II","FY","Phy-2",3,32,"t3"), ("S13","III","SY","CS-1",1,11,"t4"), ("S13","II","SY","CS-2",3,32,"t5"), ("S14","II","TY","Mu-1",2,21,"t4"), ("S14","II","TY","Mu-2",2,21,"t2"), ("S14","I","FY","His-1",4,42,"t3"), ("S16","II","TY","Bio-1",5,52,"t3");
 
 //Updating a wrong value
 mysql> Update section SET sec_id = "S15" where course_id = "His-1" AND building = 4;
@@ -666,16 +671,233 @@ id = teaches.ins_id;
 
 
 15. List all instructors along with title of courses that they teach  
+Ans:
+mysql> select ins_name, title from instructor, course, teaches where instructor.ins_id = teaches.ins_id AND course.course_id = teaches.course_id;
++----------+--------------------+
+| ins_name | title              |
++----------+--------------------+
+| ABC      | Robotics           |
+| EFG      | Physics Principles |
+| LMN      | Music audio        |
+| STU      | Intro to Bio       |
+| STU      | Genetics           |
++----------+--------------------+
+5 rows in set (0.08 sec)
+
+16. Find names of all departments whode name include substring i
+Ans: 		
+mysql> Select dept_name from department where dept_name Like "%i%";
++-----------+
+| dept_name |
++-----------+
+| Biology   |
+| History   |
+| Music     |
+| Physics   |
++-----------+
+
+17. Find names of instructor along with department name and building no. 
+Ans: 
+mysql> select * from instructor where LENGTH(ins_name) = 3;
++--------+----------+--------+-----------+
+| ins_id | ins_name | salary | dept_name |
++--------+----------+--------+-----------+
+|    113 | EFG      |  90000 | Physics   |
+|    114 | XYZ      |  70000 | History   |
+|    115 | LMN      |  45000 | Music     |
+|    116 | UVW      |  90000 | Physics   |
+|    117 | STU      |  75000 | Biology   |
++--------+----------+--------+-----------+
+
+18. Find the titles along with department names where dept must end with 'y'
+Ans:
+mysql> select dept_name, title from course where Right(dept_name,1) = 'y' ;
++-----------+---------------+
+| dept_name | title         |
++-----------+---------------+
+| Biology   | Intro to Bio  |
+| Biology   | Genetics      |
+| History   | World History |
++-----------+---------------+
+3 rows in set (0.00 sec)
+	
+19. List all the instructors in descending order
+Ans:
+
+mysql> select ins_id , ins_name from instructor ORDER By ins_id desc;
++--------+----------+
+| ins_id | ins_name |
++--------+----------+
+|    117 | STU      |
+|    116 | UVW      |
+|    115 | LMN      |
+|    114 | XYZ      |
+|    113 | EFG      |
+|    112 | PQRS     |
+|    111 | ABCDE    |
++--------+----------+
+7 rows in set (0.00 sec)
+
+20. Find the names of instructor with salary amount between 30000 and 50000
+Ans:
+ mysql> select ins_name from instructor where salary Between 30000 AND 50000;
++----------+
+| ins_name |
++----------+
+| PQRS     |
+| LMN      |
++----------+
 
 
+21. Display total salary of all staff members from instructor
+Ans:
+mysql> select salary  from instructor;
++--------+
+| salary |
++--------+
+|  85000 |
+|  45000 |
+|  90000 |
+|  70000 |
+|  45000 |
+|  90000 |
+|  75000 |
++--------+
+7 rows in set (0.00 sec)
+
+mysql> select SUM(salary) from instructor;
++-------------+
+| SUM(salary) |
++-------------+
+|      500000 |
++-------------+
+1 row in set (0.00 sec)
 
 
+22. Display total salary of those staff members who are from Music dept
+Ans:
+mysql> select SUM(salary) from instructor where dept_name = "Music";
++-------------+
+| SUM(salary) |
++-------------+
+|       90000 |
++-------------+
+1 row in set (0.00 sec)
+
+23. Write a query to find out the number of staff members who are from Physics Department
+Ans:
+
+mysql> select ins_name , dept_name  from instructor;
++----------+-----------+
+| ins_name | dept_name |
++----------+-----------+
+| ABCDE    | Computer  |
+| PQRS     | Music     |
+| EFG      | Physics   |
+| XYZ      | History   |
+| LMN      | Music     |
+| UVW      | Physics   |
+| STU      | Biology   |
++----------+-----------+
+mysql> select COUNT(ins_id) from instructor where dept_name = "Physics";
++---------------+
+| COUNT(ins_id) |
++---------------+
+|             2 |
++---------------+
+1 row in set (0.00 sec)
 
 
+24. Write a query to display average salary of staff members
+Ans:
+mysql> select AVG(salary) from instructor ;
++-------------+
+| AVG(salary) |
++-------------+
+|  71428.5714 |
++-------------+
+1 row in set (0.00 sec)
+
+25. Write a query to find the minimum salary paid to the staff members
+Ans:
+mysql> select MIN(salary) As MinimumSalary from instructor ;
++--------------+
+| MinimumSalary |
++--------------+
+|        45000 |
++--------------+
+1 row in set (0.00 sec)
+
+26. Write a query to find the maximum salary paid to the staff members
+Ans:
+mysql> select Max(salary) As MaximumSalary from instructor ;
++---------------+
+| MaximumSalary |
++---------------+
+|         90000 |
++---------------+
+1 row in set (0.00 sec)
 
 
+27. Write a query to display max. and min. number of credits given to a student in each department/\
+Ans:
+mysql> select Max(salary) As MaximumSalary , Min(salary) As MinimumSalary from instructor ;
++---------------+---------------+
+| MaximumSalary | MinimumSalary |
++---------------+---------------+
+|         90000 |         45000 |
++---------------+---------------+
+1 row in set (0.00 sec)
+
+28. Display the names of instructors who do not have salary in between 50000 and 68000
+Ans:
+mysql> select ins_name,salary from instructor where salary > 50000 OR salary < 30000;
++----------+--------+
+| ins_name | salary |
++----------+--------+
+| ABCDE    |  85000 |
+| PQRS     |  20000 |
+| EFG      |  90000 |
+| XYZ      |  70000 |
+| LMN      |  20000 |
+| UVW      |  90000 |
+| STU      |  75000 |
++----------+--------+
+7 rows in set (0.00 sec)
 
 
+29. Fint out the set of all courses taught in sem I or sem II or both for TY
+Ans:
+mysql> (select course_id,semester,year from section where year = "TY") Union (select course_id , semester,year from section where semester = "I
+" OR semester ="II") ;
++-----------+----------+------+
+| course_id | semester | year |
++-----------+----------+------+
+| Mu-1      | II       | TY   |
+| Mu-2      | II       | TY   |
+| Bio-1     | II       | TY   |
+| Phy-2     | II       | FY   |
+| CS-2      | II       | SY   |
+| Bio-2     | I        | FY   |
+| His-1     | I        | FY   |
+| Bio-1     | I        | FY   |
++-----------+----------+------+
+8 rows in set (0.00 sec)
 
 
+30. Find the average salary in each Department
+Ans:
+mysql> (select dept_name, Avg(salary) from instructor where dept_name = "Biology") Union (select dept_name, Avg(salary) from instructor where dept_name = "Computer") Union (select dept_name, Avg(salary) from instructor where dept_name = "History") Union (select dept_name, Avg(salary) from instructor where dept_name = "Music") Union (select dept_name, Avg(salary) from instructor where dept_name = "Physics");
++-----------+-------------+
+| dept_name | Avg(salary) |
++-----------+-------------+
+| Biology   |  75000.0000 |
+| Computer  |  85000.0000 |
+| History   |  70000.0000 |
+| Music     |  20000.0000 |
+| Physics   |  90000.0000 |
++-----------+-------------+
+5 rows in set (0.00 sec)
 
+31. Find the average salary in each Department where average salary of all instructors is more than 40000
+Ans: 
