@@ -1,0 +1,40 @@
+Q. Find total no. of students have taken course taught by instructor 117?
+
+mysql> select ins_id,name, title from student,course, takes,teaches where student.sid = takes.sid AND  teaches.course_id = takes.course_id AND course.course_id = takes.course_id AND ins_id = 117;
++--------+-------+--------------+
+| ins_id | name  | title        |
++--------+-------+--------------+
+|    117 | Priya | Intro to Bio |
+|    117 | Priya | Genetics     |
++--------+-------+--------------+
+2 rows in set (0.00 sec)
+
+
+Q. Find the name of instructor who have taught course student S1mysql> select ins_name from instructor, takes , teaches where instructor.ins_id = teaches.ins_id AND teaches.course_id = takes.course_id  AND sid = "S1";
++----------+
+| ins_name |
++----------+
+| ABCDE    |
++----------+
+
+
+
+Q. Find out name of instructor whose name are neither ABC nor LMN
+
+mysql> select ins_name from instructor where ins_name != "ABC" AND ins_name!="LMN";
++----------+
+| ins_name |
++----------+
+| ABCDE    |
+| PQRS     |
+| EFG      |
+| XYZ      |
+| UVW      |
+| STU      |
++----------+
+6 rows in set (0.00 sec)
+
+
+
+------------------------------------------------------------------------------
+
