@@ -887,9 +887,9 @@ mysql> (select course_id,semester,year from section where year = "TY") Union (se
 
 30. Find the average salary in each Department
 Ans:
-mysql> (select dept_name, Avg(salary) from instructor where dept_name = "Biology") Union (select dept_name, Avg(salary) from instructor where dept_name = "Computer") Union (select dept_name, Avg(salary) from instructor where dept_name = "History") Union (select dept_name, Avg(salary) from instructor where dept_name = "Music") Union (select dept_name, Avg(salary) from instructor where dept_name = "Physics");
+mysql> select dept_name,AVG(salary) from instructor Group by dept_name having AVG(salary);
 +-----------+-------------+
-| dept_name | Avg(salary) |
+| dept_name | AVG(salary) |
 +-----------+-------------+
 | Biology   |  75000.0000 |
 | Computer  |  85000.0000 |
@@ -899,5 +899,265 @@ mysql> (select dept_name, Avg(salary) from instructor where dept_name = "Biology
 +-----------+-------------+
 5 rows in set (0.00 sec)
 
+
 31. Find the average salary in each Department where average salary of all instructors is more than 40000
 Ans: 
+mysql> select dept_name,AVG(salary) from instructor Group by dept_name having AVG(salary) < 40000;
++-----------+-------------+
+| dept_name | AVG(salary) |
++-----------+-------------+
+| Music     |  20000.0000 |
++-----------+-------------+
+1 row in set (0.00 sec)
+
+32. Find the number of instructors with department name in each department
+Ans: 
+mysql> select  count(ins_id), dept_name from instructor  Group by dept_name havi
+ng Count(ins_id);
++---------------+-----------+
+| count(ins_id) | dept_name |
++---------------+-----------+
+|             1 | Biology   |
+|             1 | Computer  |
+|             1 | History   |
+|             2 | Music     |
+|             2 | Physics   |
++---------------+-----------+
+5 rows in set (0.00 sec)
+
+33. Find out department name with average salary where average salary is not between 10000 and 100000
+Ans: 
+// Updating values in salary as no salary was under 10000
+mysql> Update instructor SET salary = 9000 where ins_id = 115;
+Query OK, 1 row affected (0.06 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+//Excecuting query 
+mysql> select salary , dept_name from instructor where salary NOT Between 10000
+AND 100000;
++--------+-----------+
+| salary | dept_name |
++--------+-----------+
+|   9000 | Music     |
++--------+-----------+
+1 row in set (0.00 sec)
+
+34. Find out the courses taught both in sem I of FY and semII of TY
+Ans: 
+mysql> select course_id from teaches where year="FY" AND semester = "I" OR year="TY" AND semester = "II" ;
++-----------+
+| course_id |
++-----------+
+| Mu-1      |
+| Bio-1     |
+| Bio-2     |
++-----------+
+3 rows in set (0.00 sec)
+
+35. Find out the set of courses taught in sem I of FY but not in sem II of TY.
+Ans:
+mysql> select title from course,teaches where year="FY" AND semester = "I" AND year!="TY" AND semester != "II" AND course.course_id = teaches.course_id;
++--------------+
+| title        |
++--------------+
+| Intro to Bio |
+| Genetics     |
++--------------+
+2 rows in set (0.00 sec)
+
+
+36. Find the name of all the instructors together with course_id of all they teach
+Ans:
+
+mysql> select ins_name,course_id from instructor,teaches Where instructor.ins_id = teaches.ins_id;
++----------+-----------+
+| ins_name | course_id |
++----------+-----------+
+| ABCDE    | CS-2      |
+| EFG      | Phy-2     |
+| LMN      | Mu-1      |
+| STU      | Bio-1     |
+| STU      | Bio-2     |
++----------+-----------+
+5 rows in set (0.01 sec)
+
+37. List the name of the instructors along with the titles of the cuorse they teach
+Ans: 
+mysql> select ins_name,title from instructor,course, teaches Where instructor.ins_id = teaches.ins_id AND course.course_id = teaches.course_id;
++----------+--------------------+
+| ins_name | title              |
++----------+--------------------+
+| ABCDE    | Robotics           |
+| EFG      | Physics Principles |
+| LMN      | Music audio        |
+| STU      | Intro to Bio       |
+| STU      | Genetics           |
++----------+--------------------+
+5 rows in set (0.01 sec)
+ 
+38. Left Outer Join 
+Ans:
+mysql> select instructor.ins_name , instructor.dept_name from instructor LEFT Jo
+in department ON department.dept_name = instructor.dept_name;
++----------+-----------+
+| ins_name | dept_name |
++----------+-----------+
+| ABCDE    | Computer  |
+| PQRS     | Music     |
+| EFG      | Physics   |
+| XYZ      | History   |
+| LMN      | Music     |
+| UVW      | Physics   |
+| STU      | Biology   |
++----------+-----------+
+7 rows in set (0.00 sec)
+
+39. Right Outer Join
+mysql> select course.title , course.course_id  from course Right Join department ON department.dept_name = course.dept_name;
++--------------------+-----------+
+| title              | course_id |
++--------------------+-----------+
+| Intro to Bio       | Bio-1     |
+| Genetics           | Bio-2     |
+| Intro to CS        | CS-1      |
+| Robotics           | CS-2      |
+| World History      | His-1     |
+| Music audio        | Mu-1      |
+| Music video promo  | Mu-2      |
+| Physics Principles | Phy-2     |
++--------------------+-----------+
+8 rows in set (0.00 sec)
+
+40. Inner Join
+
+mysql> select teaches.course_id, teaches.year from teaches Inner Join course On
+course.course_id = teaches.course_id;
++-----------+------+
+| course_id | year |
++-----------+------+
+| CS-2      | SY   |
+| Phy-2     | FY   |
+| Mu-1      | TY   |
+| Bio-1     | FY   |
+| Bio-2     | FY   |
++-----------+------+
+5 rows in set (0.00 sec)
+
+//String Functions
+
+41. Display names of all the students in UPPERCASE.
+Ans: 
+mysql> select Upper(name) As UpperCase_Names from student;
++-----------------+
+| UpperCase_Names |
++-----------------+
+| GOVARDHAN       |
+| RAJESH          |
+| CHINTAN         |
+| KARTIKA         |
+| PRIYA           |
+| DAGADRAO        |
+| MAAZ            |
++-----------------+
+7 rows in set (0.00 sec)
+
+42.  Display names of all the students in lowercase.
+Ans: 
+mysql> select lower(name) As LowerCase_Names from student;
++-----------------+
+| LowerCase_Names |
++-----------------+
+| govardhan       |
+| rajesh          |
+| chintan         |
+| kartika         |
+| priya           |
+| dagadrao        |
+| maaz            |
++-----------------+
+7 rows in set (0.00 sec)
+
+43. Find the length of the titles of the courses.
+Ans:
+mysql> select title, length(title) As TotalCharacters from course;
++--------------------+-----------------+
+| title              | TotalCharacters |
++--------------------+-----------------+
+| Intro to Bio       |              12 |
+| Genetics           |               8 |
+| Intro to CS        |              11 |
+| Robotics           |               8 |
+| World History      |              13 |
+| Music audio        |              11 |
+| Music video promo  |              17 |
+| Physics Principles |              18 |
++--------------------+-----------------+
+8 rows in set (0.00 sec)
+
+44. Perform the left padding on student table for student with sid as S5.
+Ans:
+mysql> select LPAD(name,10,"e") from student where sid =  "S5";
++-------------------+
+| LPAD(name,10,"e") |
++-------------------+
+| eeeeePriya        |
++-------------------+
+1 row in set (0.00 sec)
+
+45. Perform the left padding on student table for student with sid as S5.
+Ans:
+mysql> select RPAD(name,12,"Dada") from student where sid =  "S6";
++----------------------+
+| RPAD(name,12,"Dada") |
++----------------------+
+| DagadraoDada         |
++----------------------+
+1 row in set (0.00 sec)
+
+46. Use substring operation for department names.
+Ans:
+mysql> select Substring(dept_name, 1,3) from department;
++---------------------------+
+| Substring(dept_name, 1,3) |
++---------------------------+
+| Bio                       |
+| Com                       |
+| His                       |
+| Mus                       |
+| Phy                       |
++---------------------------+
+5 rows in set (0.00 sec)
+
+47. Replace any words in titlle column of the course table
+Ans:
+mysql> select Replace(title,"History","is Flat") from course;
++------------------------------------+
+| Replace(title,"History","is Flat") |
++------------------------------------+
+| Intro to Bio                       |
+| Genetics                           |
+| Intro to CS                        |
+| Robotics                           |
+| World is Flat                      |
+| Music audio                        |
+| Music video promo                  |
+| Physics Principles                 |
++------------------------------------+
+8 rows in set (0.00 sec)
+
+48. Display current date and time.
+Ans:
+mysql> select sysdate() As Date_AND_time;
++---------------------+
+| Date_AND_time       |
++---------------------+
+| 2022-04-13 11:22:04 |
++---------------------+
+1 row in set (0.00 sec)
+
+49. Display the joining date of staff member whose name is 'ABC'.
+Ans:
+
+50. Display the name of staf members with department name and joining date, joining date should be displayed in USA
+Ans:
+
